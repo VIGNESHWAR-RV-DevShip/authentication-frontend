@@ -15,6 +15,11 @@ export function NavBar(){
                        onClick={()=>navigate("profile")}>
                         Profile
                 </Button>
+                {" "}
+                <Button className="bg-success text-white border"
+                        onClick={()=>navigate("products")}>
+                     products
+                </Button>
                </Col>
         </Container>
         </>

@@ -11,7 +11,7 @@ export function SignUp(){
 
     const navigate = useNavigate();
 
-    useEffect(()=>{
+    useEffect(()=>{ //to check if user id=s already logged in
         const id = sessionStorage.getItem("id");
         const token = sessionStorage.getItem("token");
 
@@ -21,11 +21,11 @@ export function SignUp(){
               headers:{id,token}})
             .then((response)=>{
              if(response.status === 400){
-                 return sessionStorage.clear();
+                 return sessionStorage.clear(); //if invalid id and token clearing such token
              }
              else if(response.status === 200){
-                 toast.success("You are already signed in");
-                 navigate("/dashboard");
+                 toast.success("You are already signed in"); //toast to show that they are already logged in
+                 navigate("/dashboard"); //moving to dashboard page 
                 }})
         }
 

@@ -7,41 +7,47 @@ import toast from "react-hot-toast";
 
 export function Profile(){
 
+    //navigate route ( usehistory);
     const navigate = useNavigate();
-
+ 
+     //useState for updating userInfo
     const [userInfo,setUserInfo] = useState({});
 
+    //useState to set edit on inputs
     const [edit,setEdit] = useState(true);
 
+    //to load the user detils while rendering the component;
 useEffect(()=>{
 
     const id = sessionStorage.getItem("id");
     const token = sessionStorage.getItem("token"); 
-
-    fetch(API+"/profile",
-    {method:"GET",
-     headers:{id,token}})
-.then((response)=>{
-   if(response.status === 400){
-       navigate("/login");
-   }
-   else if(response.status === 200){
-       async function getting(){
-           const reply = await response.json();
-           setUserInfo(reply);
-       }
-       getting();
-   }
-})
+  
+    if(id && token){
+      fetch(API+"/profile",{method:"GET",headers:{id,token}})
+      .then((response)=>{
+            if(response.status === 400){
+                navigate("/login"); //if no such id and token redirecting to login page
+            }
+            else if(response.status === 200){
+                async function getting(){
+                    const reply = await response.json();
+                    setUserInfo(reply);
+                }
+                getting(); //function to convert the response to data and update userInfo with data
+            }})
+        }else{
+            navigate("/login"); //if no such id and token redirecting to login page
+        }
 },[navigate]);
 
-
+        //regex pattern for input fields
 const regExp = {firstName:"^[a-zA-Z ]{2,}$",
                 userName:"^[a-zA-Z0-9@#]{4,16}$",
                 email:"^[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$",
                 password:"^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$"
                 };
 
+        //object attributes for input field
 const Inputs = [
     {name:"firstName",
     type:"text",
@@ -88,13 +94,16 @@ const Inputs = [
      pattern:regExp.email,
      autoComplete:"email"}
 ];
-
+ 
+       //updating user details while changing
 const handleChange = (e)=>{
     setUserInfo({...userInfo,[e.target.name]:e.target.value})
+    // updating userinfo on changing..
 }
 
+// for update changes if changes are made
 const update = (e)=>{
-    e.preventDefault();
+    e.preventDefault(); //preventing form submission
     const id = sessionStorage.getItem("id");
     const token = sessionStorage.getItem("token");
 
@@ -105,14 +114,15 @@ const update = (e)=>{
           body:JSON.stringify(userInfo)})
         .then((response)=>{
            if(response.status === 200){
-             toast.success("successfully updated");
-             setEdit(true);
+             toast.success("successfully updated"); //success toast
+             setEdit(true); //disabling edit mode
            }else{
-               toast.error("couldnt update please try again sometime")
+               toast.error("couldnt update please try again sometime"); //error toast
            }
         })
     }
 
+    //function for signing out
 const signOut=()=>{
 
         const id = sessionStorage.getItem("id");
@@ -133,17 +143,19 @@ const signOut=()=>{
        }
     })
 }
+
     return(
         <>
         <Container fluid className="p-4">
           <Form className="col-lg-4 col-md-8 col-sm-12"
                  onSubmit={update}>
 
+              {/* mapping input object attributes to create (input form group) */}
             {Inputs.map((input,index)=>
                  <InputComponent {...input} key={index} typing={handleChange}/>
              )}
              <Row className="p-2">
-            {(edit)
+            {(edit)//checking edit to render the buttons
               ?
               <Button className="bg-danger"
                       type="button"
@@ -152,12 +164,14 @@ const signOut=()=>{
               </Button>
               :
               <Col>
+              {/* cancel button to set disable to inputs */}
               <Button className="bg-danger col-4"
                       type="button"
                       onClick={()=>setEdit(true)}>
                   cancel
                </Button>
                {" "}
+               {/* update button to trigger update function */}
                <Button className="bg-success col-4">
                   Update Changes
                </Button>
@@ -165,7 +179,7 @@ const signOut=()=>{
                }
             </Row>
             <br/>
-
+            {/* sign out button */}
              <Button  type="button" onClick={signOut}>
                  Sign Out
              </Button>
