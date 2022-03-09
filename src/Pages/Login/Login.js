@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button,Container,Form,Col,Row} from "reactstrap";
 import { InputComponent } from "../../components/inputComponent/inputComponent";
+import { API } from "../../API";
+
 export function Login(){
 
     const navigate = useNavigate();
@@ -41,11 +43,11 @@ export function Login(){
            !strongPasswordRegex.test(user.password)){
          return setErrorMessage("invalid user credentials");
        }
-       
-       fetch("http:localhost:9000"+"/login",
-         {method:"POST",
-          header:{"Content-Type":"application/json"},
-          body:JSON.stringify(user)})
+        
+       fetch(API+"/login",
+       {method:"POST",
+       headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(user)})
        .then((response)=>{
           if(response.status === 400){
             return setErrorMessage("Invalid user credentials");
@@ -55,6 +57,7 @@ export function Login(){
               const reply = await response.json();
               sessionStorage.setItem("id",reply.id);
               sessionStorage.setItem("token",reply.token);
+              navigate("/dashboard");
             }
             store();
           }
@@ -66,7 +69,7 @@ export function Login(){
         <>
           <Container className="bg-primary p-5" fluid>
 
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit} className="col-lg-4 col-md-6 col-sm-8">
                  <h1 className="text-dark">LOGIN PAGE</h1>
                  <br/>
                  {Inputs.map((input,index)=>
@@ -77,17 +80,16 @@ export function Login(){
                         {errorMessage}
                       </p>
                      :""} 
-                    <br/>
-                   <Button className="bg-success border"
-                           type="submit" >
-                          Login
-                   </Button>
-                   {" "}
+                
+                    <Button className="bg-success border"
+                            type="submit" >
+                           Login
+                    </Button>
+                    {" "}
                    <Button className="bg-secondary border" 
                            type="button"
-                           onClick={()=>navigate("/signup")}>SignUp</Button>
-
-                
+                           onClick={()=>navigate("/signup")}>SignUp
+                   </Button>
        
             </Form>
           </Container>

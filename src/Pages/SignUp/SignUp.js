@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Container,Button,Col, Form } from "reactstrap";
+import { Input,Container,Button,Col,Form, FormGroup, Row } from "reactstrap";
 import { InputComponent } from "../../components/inputComponent/inputComponent";
+import { API } from "../../API";
 
 export function SignUp(){
 
     const [newUser,setNewUser] = useState({});
-
-    console.log(newUser);
 
     const navigate = useNavigate();
 
@@ -38,18 +37,16 @@ export function SignUp(){
  
         {name:"gender",
          type:"select",
-         options:[["select an option",true],
-                  ["Male"],
-                  ["Female"],
-                  ["not preferred to enter"]],
+         options:[["Click here to select an option","",true],
+                  ["Male","male"],
+                  ["Female","female"],
+                  ["not preferred to enter","none"]],
          label:"Gender",
          placeholder:"Enter your gender if you wish",
          validMessage:"Awesome",
          errorMessage:"Its mandatory to select",
          required:true,
-         pattern:["Male",
-                  "Female",
-                  "not preferred to enter"]},
+         pattern:"([a-z]*)"},
  
          {name:"email",
          type:"email",
@@ -79,45 +76,73 @@ export function SignUp(){
          errorMessage:"Passwords does not match",
          required:true,
          pattern:newUser.password,
-         autoComplete:"current-password"}
+         autoComplete:"current-password"},
+
+
     ];
  
     const handleChange = (e)=>{
         setNewUser({...newUser,[e.target.name]:e.target.value});
     }
 
-    const handleSubmit = (e)=>{
+    const handleSubmit=(e)=>{
         e.preventDefault();
-        console.log("hii");
+       
+        const {firstName,lastName,gender,email,password} = newUser;
+
+        fetch(API+"/signup",
+         {method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({firstName,lastName,gender,email,password})})
+        .then((response)=>{
+           if(response.status === 200){
+               setTimeout(()=>{
+                  navigate("/login");
+               },1000);
+           }
+        })
     }
 
     return(
         <>
        <Container className="bg-primary p-5" fluid>   
-         <Form onClick={handleSubmit}>
+         <Form onSubmit={handleSubmit} className="col-lg-4 col-md-6 col-sm-8">
             <h1 className="text-dark">SIGN UP</h1>
 
              {Inputs.map((input,index)=>
                  <InputComponent {...input} key={index} typing={handleChange}/>
              )}
-          
-             <Button className="btn-success border"
-                     type="submit">
-                 Sign Up
-             </Button>
-     
-              <Col>
-                <label htmlFor="loginButton" className="text-warning">
-                    already have account? 
-                </label>
-                {" "}
-                <Button id="loginButton" 
-                        type="button"
-                        className="bg-warning"
-                        onClick={()=>navigate("/login")}>
-                    Login
+             
+             {/* check for defining it contains checkbox */}
+             <FormGroup check>  
+                 <Input type="checkbox" className="border"/>
+                 <label className="bg-success text-white border radius-2">
+                     Accept our Terms and Conditions</label>
+             </FormGroup>
+
+             <br/>
+
+             <Row xs="1" sm="1" md="1" lg="2" >
+                 <Col>
+                 <Button className="btn-success border"
+                          type="submit">
+                     Sign Up
                  </Button>
-              </Col>
+                 </Col>
+
+                  <Col>
+                     <label htmlFor="loginButton" className="text-warning">
+                         already have account? 
+                     </label>
+                     {" "}
+                     <Button id="loginButton" 
+                             type="button"
+                             className="bg-warning border"
+                             onClick={()=>navigate("/login")}>
+                         Login
+                      </Button>
+                 </Col>
+              </Row>
          </Form>
       </Container>
         </>

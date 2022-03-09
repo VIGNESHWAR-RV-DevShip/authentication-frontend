@@ -19,47 +19,33 @@ export function InputComponent({label,
             return ;
         }
 
-        if(e.target.type === "select-one"){ 
-            if(pattern.includes(e.target.value)){
-              return   setValidation({valid:true,invalid:false});
-            }
-        }
-
       if(new RegExp(pattern).test(e.target.value)){
           return  setValidation({valid:true,invalid:false});    
         }
     }
 
     const handleFocus = (e)=>{
-
-        if(e.target.type === "select-one"){
-            if(!pattern.includes(e.target.value)){
-               return  setValidation({valid:false,invalid:true});
-            }else{
-            return ;
-            }
-        }
-
          if(!new RegExp(pattern).test(e.target.value)){
            return  setValidation({valid:false,invalid:true});
         }
     }
 
     return(
-        <FormGroup floating className="col-lg-4">
+        <FormGroup floating>
             {(type === "select")
                  ?
                      <Input name={name}
-                     type={type}
-                     id={name}
-                     onBlur={handleFocus}
-                     onChange={handleChange}
-                     {...inputprops} 
-                     invalid={validation.invalid}
-                     valid={validation.valid}>
+                            className="text-primary border"
+                            type={type}
+                            id={name}
+                            onBlur={handleFocus}
+                            onChange={handleChange}
+                            {...inputprops}
+                            invalid={validation.invalid}
+                            valid={validation.valid}>
 
                      {inputprops.options.map((option,index)=>
-                         <option key={index} hidden={option[1]}>
+                         <option key={index} value={option[1]} hidden={option[2]}>
                                {option[0]}
                          </option>)}
 
@@ -67,24 +53,25 @@ export function InputComponent({label,
                  :
                   <Input name={name}
                          type={type}
+                         className="text-primary border"
                          id={name}
                          onBlur={handleFocus}
                          onChange={handleChange}
-                         {...inputprops} 
+                         {...inputprops}
                          invalid={validation.invalid} 
                          valid={validation.valid}/>
                          
                 }
               
-             <label htmlFor={name}>{label}</label>
+             <label htmlFor={name} className="text-dark">{label}</label>
 
              {(validation.invalid)
-                 ?<FormFeedback invalid="true">
+                 ?<FormFeedback className="bg-danger text-white" invalid="true">
                     {errorMessage}
                   </FormFeedback>
                  :""}
               {(validation.valid)
-                  ?<FormFeedback valid>
+                  ?<FormFeedback className="bg-success text-white" valid>
                     {validMessage}
                    </FormFeedback>
                   :""}

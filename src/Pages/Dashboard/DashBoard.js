@@ -1,8 +1,11 @@
+import { Container } from "reactstrap";
 
-export function DashBoard(){
+export function DashBoard({info}){
     return(
         <>
-        <h1>dashboard</h1>
+        <Container fluid>
+          <h1>Hii {info.firstName} {info.lastName}</h1>
+        </Container>
         </>
     )
 }
