@@ -1,14 +1,35 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input,Container,Button,Col,Form, FormGroup, Row } from "reactstrap";
 import { InputComponent } from "../../components/inputComponent/inputComponent";
 import { API } from "../../API";
+import toast from "react-hot-toast";
 
 export function SignUp(){
 
     const [newUser,setNewUser] = useState({});
 
     const navigate = useNavigate();
+
+    useEffect(()=>{
+        const id = sessionStorage.getItem("id");
+        const token = sessionStorage.getItem("token");
+
+        if(id && token){
+             fetch(API+"/dashboard",
+             {method:"GET",
+              headers:{id,token}})
+            .then((response)=>{
+             if(response.status === 400){
+                 return sessionStorage.clear();
+             }
+             else if(response.status === 200){
+                 toast.success("You are already signed in");
+                 navigate("/dashboard");
+                }})
+        }
+
+    },[]);
 
     const regExp = {firstName:"^[a-zA-Z ]{2,}$",
                     userName:"^[a-zA-Z0-9@#]{4,16}$",
@@ -37,10 +58,10 @@ export function SignUp(){
  
         {name:"gender",
          type:"select",
-         options:[["Click here to select an option","",true],
-                  ["Male","male"],
-                  ["Female","female"],
-                  ["not preferred to enter","none"]],
+         options:[{name:"Click here to select an option",value:"",hidden:true},
+                  {name:"Male",value:"male"},
+                  {name:"Female",value:"female"},
+                  {name:"not preferred to enter",value:"none"}],
          label:"Gender",
          placeholder:"Enter your gender if you wish",
          validMessage:"Awesome",
@@ -89,19 +110,24 @@ export function SignUp(){
         e.preventDefault();
        
         const {firstName,lastName,gender,email,password} = newUser;
-
         fetch(API+"/signup",
          {method:"POST",
           headers:{"Content-Type":"application/json"},
           body:JSON.stringify({firstName,lastName,gender,email,password})})
         .then((response)=>{
            if(response.status === 200){
+              toast.success("successfully signed up,please login to continue");
                setTimeout(()=>{
                   navigate("/login");
                },1000);
            }
+           else{
+               toast.error("An error occured while signing up , please try again later")
+           }
         })
     }
+
+
 
     return(
         <>
@@ -115,7 +141,7 @@ export function SignUp(){
              
              {/* check for defining it contains checkbox */}
              <FormGroup check>  
-                 <Input type="checkbox" className="border"/>
+                 <Input type="checkbox" className="border" required/>
                  <label className="bg-success text-white border radius-2">
                      Accept our Terms and Conditions</label>
              </FormGroup>

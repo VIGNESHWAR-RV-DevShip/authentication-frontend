@@ -40,13 +40,17 @@ export function InputComponent({label,
                             id={name}
                             onBlur={handleFocus}
                             onChange={handleChange}
+                            pattern={pattern}
                             {...inputprops}
                             invalid={validation.invalid}
                             valid={validation.valid}>
 
                      {inputprops.options.map((option,index)=>
-                         <option key={index} value={option[1]} hidden={option[2]}>
-                               {option[0]}
+                         <option key={index} 
+                                 value={option.value} 
+                                 hidden={option.hidden}
+                                 selected={option.selected}>
+                               {option.name}
                          </option>)}
 
                     </Input>
@@ -57,6 +61,7 @@ export function InputComponent({label,
                          id={name}
                          onBlur={handleFocus}
                          onChange={handleChange}
+                         pattern={pattern}
                          {...inputprops}
                          invalid={validation.invalid} 
                          valid={validation.valid}/>

@@ -20,7 +20,7 @@ useEffect(()=>{
             headers:{id,token}})
      .then((response)=>{
           if(response.status === 400){
-              console.log("error");
+              navigate("/login");
           }
           else if(response.status === 200){
               async function getting(){
@@ -31,7 +31,7 @@ useEffect(()=>{
           }
      })
 
-},[]);
+},[navigate]);
  
 
     return(

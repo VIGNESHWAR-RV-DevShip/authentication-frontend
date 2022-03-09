@@ -1,14 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button,Container,Form,Col,Row} from "reactstrap";
+import { Button,Container,Form} from "reactstrap";
 import { InputComponent } from "../../components/inputComponent/inputComponent";
 import { API } from "../../API";
+import toast from "react-hot-toast";
 
 export function Login(){
 
     const navigate = useNavigate();
     const [user,setUser] = useState({});
     
+    useEffect(()=>{
+        const id = sessionStorage.getItem("id");
+        const token = sessionStorage.getItem("token");
+
+        if(id && token){
+             fetch(API+"/dashboard",
+             {method:"GET",
+              headers:{id,token}})
+            .then((response)=>{
+             if(response.status === 400){
+                 return sessionStorage.clear();
+             }
+             else if(response.status === 200){
+                 toast.success("you are already logged in!");
+                 navigate("/dashboard");
+                }})
+        }
+
+    },[]);
+
     const [errorMessage,setErrorMessage] = useState();
 
     const Inputs = [
@@ -50,6 +71,7 @@ export function Login(){
         body:JSON.stringify(user)})
        .then((response)=>{
           if(response.status === 400){
+            toast.error('Invalid credentials');
             return setErrorMessage("Invalid user credentials");
           }
           else{
@@ -57,9 +79,13 @@ export function Login(){
               const reply = await response.json();
               sessionStorage.setItem("id",reply.id);
               sessionStorage.setItem("token",reply.token);
-              navigate("/dashboard");
+              toast.success("welcome back user");
+            return  setTimeout(()=>{
+                navigate("/dashboard")
+              },800);
+        ;
             }
-            store();
+          return  store();
           }
        })
 
