@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API } from "../../API";
 import { InputComponent } from "../../components/inputComponent/inputComponent";
-import {Row,Button, Container, Col} from "reactstrap";
+import {Row,Button, Container, Col,Form} from "reactstrap";
 import toast from "react-hot-toast";
 
 export function Profile(){
@@ -93,7 +93,8 @@ const handleChange = (e)=>{
     setUserInfo({...userInfo,[e.target.name]:e.target.value})
 }
 
-const update = ()=>{
+const update = (e)=>{
+    e.preventDefault();
     const id = sessionStorage.getItem("id");
     const token = sessionStorage.getItem("token");
 
@@ -135,7 +136,8 @@ const signOut=()=>{
     return(
         <>
         <Container fluid className="p-4">
-          <div className="col-lg-4 col-md-8 col-sm-12">
+          <Form className="col-lg-4 col-md-8 col-sm-12"
+                 onSubmit={update}>
 
             {Inputs.map((input,index)=>
                  <InputComponent {...input} key={index} typing={handleChange}/>
@@ -144,18 +146,19 @@ const signOut=()=>{
             {(edit)
               ?
               <Button className="bg-danger"
+                      type="button"
                       onClick={()=>setEdit(false)}>
                   Edit
               </Button>
               :
               <Col>
               <Button className="bg-danger col-4"
+                      type="button"
                       onClick={()=>setEdit(true)}>
                   cancel
                </Button>
                {" "}
-               <Button className="bg-success col-4"
-                      onClick={()=>update()}>
+               <Button className="bg-success col-4">
                   Update Changes
                </Button>
                </Col>
@@ -163,11 +166,11 @@ const signOut=()=>{
             </Row>
             <br/>
 
-             <Button onClick={signOut}>
+             <Button  type="button" onClick={signOut}>
                  Sign Out
              </Button>
 
-             </div>
+             </Form>
         </Container>
         </>
     )

@@ -28,7 +28,7 @@ export function Login(){
                 }})
         }
 
-    },[]);
+    },[navigate]);
 
     const [errorMessage,setErrorMessage] = useState();
 
@@ -62,6 +62,7 @@ export function Login(){
         if(!userNameRegex.test(user.email) 
            || 
            !strongPasswordRegex.test(user.password)){
+            toast.error("Invalid credentials");
          return setErrorMessage("invalid user credentials");
        }
         

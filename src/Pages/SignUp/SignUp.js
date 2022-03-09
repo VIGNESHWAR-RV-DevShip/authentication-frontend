@@ -29,7 +29,7 @@ export function SignUp(){
                 }})
         }
 
-    },[]);
+    },[navigate]);
 
     const regExp = {firstName:"^[a-zA-Z ]{2,}$",
                     userName:"^[a-zA-Z0-9@#]{4,16}$",
