@@ -54,8 +54,7 @@ export function InputComponent({label,
                          </option>)}
 
                     </Input>
-                 :
-                  <Input name={name}
+                 :<Input name={name}
                          type={type}
                          className="text-primary border"
                          id={name}
@@ -68,7 +67,10 @@ export function InputComponent({label,
                          
                 }
               
-             <label htmlFor={name} className="text-dark">{label}</label>
+             <label 
+                  htmlFor={name} 
+                  className={(type==="radio")?((label==="Available")?"text-success":"text-danger"):"text-dark"}>{label}
+             </label>
 
              {(validation.invalid)
                  ?<FormFeedback className="bg-danger text-white" invalid="true">

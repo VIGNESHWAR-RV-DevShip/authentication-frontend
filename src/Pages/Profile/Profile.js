@@ -92,8 +92,7 @@ const Inputs = [
      required:true,
      disabled:edit,
      pattern:regExp.email,
-     autoComplete:"email"}
-];
+     autoComplete:"email"}];
  
        //updating user details while changing
 const handleChange = (e)=>{

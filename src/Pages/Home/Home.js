@@ -4,6 +4,8 @@ import { DashBoard } from "../Dashboard/DashBoard";
 import { NavBar } from "../NavBar/NavBar";
 import { Profile } from "../Profile/Profile";
 import { Products } from "../Products/products";
+import { SpecificProduct } from "../SpecificProduct/specificProduct";
+import { Bin } from "../Bin/Bin";
 import { API } from "../../API";
 
 export function Home(){
@@ -16,6 +18,7 @@ useEffect(()=>{
     const id = sessionStorage.getItem("id");
     const token = sessionStorage.getItem("token");
 
+    if(id && token){
      fetch(API+"/dashboard",
            {method:"GET",
             headers:{id,token}})
@@ -31,6 +34,9 @@ useEffect(()=>{
               getting();
           }
      })
+    }else{
+        navigate("/login");
+    }
 
 },[navigate]);
  
@@ -44,7 +50,11 @@ useEffect(()=>{
           <Route path="profile" element={<Profile/>}/>
 
           <Route path="products" element={<Products/>}/>
+
+          <Route path="/bin" element={<Bin/>}/>
     
+          <Route path="products/:slug" element={<SpecificProduct/>}/>
+
           <Route path="*" element={<h1>404</h1>}/>
         </Routes>
         </>
